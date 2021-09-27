@@ -37,6 +37,8 @@ xlabel("Time (Sec)")
 ylabel("Magnitude")
 hold off;
 %% part e
+% multiply by cos to put blob at center
+y_I2 = y_I2 .* cos(2.*pi.*100000.*t);
 % take derivative of signal
 dydx = diff(y_I2(:))./diff(t(:));
 % zero out negative components
@@ -50,6 +52,8 @@ xlabel("Time (Sec)")
 ylabel("Magnitude")
 hold off;
 %% part f
+% dydx = dydx .* cos(2.*pi.*100000.*t);
+
 % create a LPF
 vals = linspace(-5,5,101);
 h = sinc(vals);
