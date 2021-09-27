@@ -76,6 +76,26 @@ out = decimate(output_norm,4);
 sound(out,fs/4)
 
 %% Exercise 2
+fs = 300e3; % this is the sample rate
+fc = 107.9e6; % this is the center frequency
+
+t = linspace(1,fs*5,fs*5+160);
+t = t.';
+x = zeros(fs*5,1); % empty vector to store data
+
+% create object for RTL-SDR receiver
+rx2 = comm.SDRRTLReceiver('CenterFrequency',fc, 'EnableTunerAGC', false, 'TunerGain', 35,  'SampleRate', fs);
+
+counter = 1; % initialize a counter
+while(counter < length(x)) % while the buffer for data is not full
+    rxdata = rx2();   % read from the RTL-SDR
+    x(counter:counter + length(rxdata)-1) = rxdata; % save the samples returned
+    counter = counter + length(rxdata); % increment counter
+end
+% the data are returned as complex numbers
+% separate real and imaginary part, and remove any DC offset
+y_I_2 = real(x)-mean(real(x));
+y_Q = imag(x)-mean(imag(x));
 %% part b
 % take derivative of y_I and y_Q
 dyIdx =  diff(y_I2(:))./diff(t(:));
@@ -88,13 +108,6 @@ m_hat = dyQdx .* y_I(1:length(dyQdx)) - (dyIdx .* y_Q(1:length(dyQdx)));
 plot(m_hat)
 hold on
 xlabel("Time (Sec)")
-ylabel("Magnitude")
-hold off
-%%
-% plot m_hat in freq domain
-plot_FT(m_hat/max(m_hat),fs)
-hold on
-xlabel("Frequency (Hz)")
 ylabel("Magnitude")
 hold off
 %%
