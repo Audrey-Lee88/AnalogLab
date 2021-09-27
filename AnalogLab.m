@@ -39,6 +39,12 @@ hold off;
 %% part e
 % multiply by cos to put blob at center
 y_I2 = y_I2 .* cos(2.*pi.*100000.*t);
+plot_FT(y_I2,fs); % Plot FFT of y_I after cos
+hold on;
+xlabel("Frequency (Hz)")
+ylabel("Magnitude")
+hold off;
+%%
 % take derivative of signal
 dydx = diff(y_I2(:))./diff(t(:));
 % zero out negative components
@@ -102,14 +108,14 @@ y_I_2 = real(x)-mean(real(x));
 y_Q = imag(x)-mean(imag(x));
 %% part b
 % take derivative of y_I and y_Q
-dyIdx =  diff(y_I2(:))./diff(t(:));
+dyIdx =  diff(y_I_2(:))./diff(t(:));
 dyQdx = diff(y_Q(:))./diff(t(:));
 
 % plug into m_hat equation
-m_hat = dyQdx .* y_I(1:length(dyQdx)) - (dyIdx .* y_Q(1:length(dyQdx)));
-
+m_hat = dyQdx .* y_I_2(1:length(dyQdx)) - (dyIdx .* y_Q(1:length(dyQdx)));
+%%
 % plot m_hat in time domain
-plot(m_hat)
+plot(t(1:end-1,:)/fs,m_hat)
 hold on
 xlabel("Time (Sec)")
 ylabel("Magnitude")
