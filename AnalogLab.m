@@ -66,12 +66,13 @@ h = sinc(vals);
 % plot_FT(h,fs)
 
 output_I = conv(dydx, h);
+output_I_norm = output_I/max(output_I);
 % plot_FT(output_I,fs);
 
 % plot in time domain both derivative and LPF
 plot(t(1:end-1,:)/fs,dydx)
 hold on;
-plot(t(1:end,:)/fs,output_I(1:length(t),:))
+plot(t(1:end-1,:)/fs,output_I_norm(1:length(t)-1,:))
 xlabel("Time (Sec)")
 ylabel("Magnitude")
 legend("Derivative","LPF")
@@ -84,7 +85,13 @@ output_norm = output ./ (max(output).*10);
 
 out = decimate(output_norm,4);
 sound(out,fs/4)
+%% save audio file
+filename = 'exercise1.wav';
+audiowrite(filename,out,fs/4);
 
+%% replay saved audio file
+[y,Fs] = audioread(filename);
+sound(y,Fs);
 %% Exercise 2
 fs = 300e3; % this is the sample rate
 fc = 107.9e6; % this is the center frequency
@@ -124,3 +131,11 @@ hold off
 % play m_hat sound
 out_m = 0.4 * decimate(m_hat,4) / max(m_hat);
 sound(out_m,fs/4)
+
+%% save audio file
+filename = 'exercise2.wav';
+audiowrite(filename,out_m,fs/4);
+
+%% replay saved audio file
+[y,Fs] = audioread(filename);
+sound(y,Fs);
