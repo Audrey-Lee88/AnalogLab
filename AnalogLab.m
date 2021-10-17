@@ -85,6 +85,21 @@ output_norm = output ./ (max(output).*10);
 
 out = decimate(output_norm,4);
 sound(out,fs/4)
+
+%%
+t_by4 = linspace(t(1),t(end),round(length(output_I_norm)/4)).';
+%%
+
+% before decim
+plot(t(1:end-1,:)/fs,output_norm(1:length(t)-1,:), "ro-")
+hold on;
+% after decim
+plot(t_by4/fs,out, "bo-")
+xlabel("Time (Sec)")
+ylabel("Magnitude")
+legend("Before Decimation", "After Decimation")
+hold off;
+
 %% save audio file
 filename = 'exercise1.wav';
 audiowrite(filename,out,fs/4);
